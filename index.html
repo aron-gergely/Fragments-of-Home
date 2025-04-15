@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Text-Image Pair</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <!-- Menu Button placed above the generated image -->
+            <button id="menuBtn">?</button>
+
+            <div id="pairContainer" class="large-pair">
+                <!-- Random text-image pairs will appear here -->
+            </div>
+            <div class="button-container">
+                <div class="left-buttons">
+                    <div class="row">
+                        <button id="newImageBtn">new image</button>
+                        <button id="newTextBtn">new text</button>
+                    </div>
+                    <button id="randomizeBtn">randomize</button>
+                </div>
+                <button id="saveBtn">➔</button>
+            </div>
+        </div>
+
+        <div class="right-side">
+            <div id="savedPairs" class="grid-container">
+                <!-- Saved pairs will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Structure -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <button id="popupCloseBtn" class="popup-close">X</button>
+            <h1 style="font-size: 4em; text-align: left;">PROJECT NAME</h1>
+            <p>⠀</p>
+            <p>⠀</p>
+            <h2>Concept:</h2>
+            <p>⠀</p>
+            <p>This project serves as an exploration of the hybrid essay, a form that blends various media to present complex, fragmented narratives. By combining text and images in a non-linear, random manner, the app mimics the hybrid essay's open-ended and associative nature. Like a visual or collage essay, the project encourages users to experiment with narrative construction, revealing how seemingly unrelated elements—text and image—can coexist and interact to create new meanings, interpretations, and visual stories.</p>
+            <p>⠀</p>
+            <p>⠀</p>
+            <h2>How to use:</h2>
+            <p>⠀</p>
+            <p>01. — Create image-text pairs using the <strong>[new image]</strong> and <strong>[new text]</strong> buttons, or generate random pairs by clicking <strong>[randomize]</strong>.</p>
+            <p>⠀</p>
+            <p>02. — Add the combinations you like to your workspace (right side) as cards with the arrow button <strong>[</strong>➔<strong>]</strong>.</p>
+            <p>⠀</p>
+            <p>03. — Organize the cards to your liking: Drag them around, create new associations or stories by experimenting with the layout.</p>
+            <p>⠀</p>
+            <p>04. — Additionally, you can save your layout as an image to your device. (Coming soon...)</p>
+            <p>⠀</p>
+            <!-- Additional content goes here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

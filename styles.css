@@ -1,0 +1,335 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+.container {
+    display: flex;
+    width: 100%; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+}
+
+.left-side {
+    width: 30%;
+    padding: 40px;
+    overflow: hidden;
+    /* padding-top: 40px; */
+    border-right: 1px solid 0;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Allow space between items */
+    position: relative;
+}
+
+.right-side {
+    width: 70%;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+button {
+    padding: 10px 25px;
+    background-color: #FE2C02;
+    color: white;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease, color 0.2s ease; /* Apply transition only to background-color and color */
+}
+
+button:hover {
+    background-color: #d50000;
+}
+
+#pairContainer img {
+    display: block; /* Ensures proper spacing */
+    width: 100%;
+    height: auto;
+}
+
+#pairContainer p {
+    font-size: 16px;
+    text-align: left;
+    margin-top: 20px;
+    color: #FE2C02;
+}
+
+#savedPairs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    min-height: 1000%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible; /* Allow dragging outside the container */
+}
+
+.card {
+    width: 250px;
+    height: auto;
+    background-color: white !important; /* Forces the color */
+    /* border-color: #f2f2f2 !important; */
+    border: 2px solid #f2f2f2 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: middle;
+    padding: 10px;
+    cursor: grab;
+    position: absolute; /* Allow cards to be placed anywhere */
+}
+
+.card:hover {
+    border-color: #FE2C02 !important;
+    /* border: 2px solid #2002fe; */
+}
+
+.card:active {
+    cursor: grabbing;
+    /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); */
+}
+
+.card img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.card p {
+    text-align: left;
+    font-size: 16px;
+    margin-top: 20px;
+    color: #FE2C02;
+    margin-bottom: 20px;
+}
+
+/*
+.draggable-container {
+    min-height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+} 
+*/
+
+/*
+.button-container {
+    position: absolute;
+    bottom: 40px;
+    left: 50%; // Center horizontally
+    transform: translateX(-50%); // Center the buttons
+    width: 100%;
+    text-align: center;
+} 
+*/
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Space out left and right buttons */
+    align-items: center; /* Ensures buttons are on the same line */
+    width: 100%; /* Ensures full width of the container */
+    margin-top: 20px; /* Adjust spacing */
+}
+
+.left-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Ensure same height and alignment */
+#randomizeBtn, #saveBtn {
+    height: 40px;
+    line-height: 40px; /* Ensures vertical alignment */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+}
+
+#saveBtn {
+    background-color: transparent;
+    font-weight: normal;
+    color: #FE2C02;
+    border: 2px solid #FE2C02;
+    width: 80px;
+    border-radius: 0;
+    margin-top: auto; /* Pushes the button to the bottom */
+    transition: background-color 0.2s ease, color 0.2s ease; /* Apply transition only to background-color and color */
+}
+
+
+#saveBtn:hover {
+    background-color: #d50000;
+    color: white;
+    border: 2px solid #d50000;
+}
+
+#saveBtn:disabled {
+    background-color: transparent;
+    color: #FE2C02;
+    border: 2px solid #FE2C02;
+    cursor: not-allowed;
+}
+
+/*
+#randomizeBtn, #saveBtn {
+    margin-top: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+*/
+
+#newImageBtn, #newTextBtn {
+    height: 40px;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+
+/* Style the delete button */
+.deleteBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 0%; /* Circle vs rectangle shape */
+    background-color: #FE2C02;
+    color: white;
+    font-size: 16px;
+    /* font-weight: bold; */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+/* Show delete button when hovering over the card */
+.card:hover .deleteBtn {
+    display: flex; /* Show button on hover */
+}
+
+
+.deleteBtn:hover {
+    background-color: #d50000; /* Darker red on hover */
+}
+
+/* Style the X inside the button */
+.deleteIcon {
+    margin-top: 0; /* Center the X */
+}
+
+
+
+/* Initially hide the popup */
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FE2C02;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent */
+    backdrop-filter: blur(5px); /* Apply blur effect to the background */
+    transition: backdrop-filter 0.3s ease; /* Animate the blur effect */
+    padding: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 3000;
+}
+
+/* Popup content style */
+.popup-content {
+    position: relative;
+    width: 65vw;
+}
+
+/* Close button style */
+.popup-close {
+    position: fixed;
+    bottom: 40px; /* Position from the bottom */
+    right: 40px;  /* Position from the right */
+    font-size: 16px;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    background-color: white;
+    color: #FE2C02;
+    border: 2px solid #FE2C02;
+    cursor: pointer;
+}
+
+.popup-close:hover {
+    background-color: #d50000;
+    color: white;
+    border: 2px solid #d50000;
+}
+
+
+/* Style for Menu Button */
+#menuBtn {
+    position: fixed;
+    bottom: 40px; /* Position from the bottom */
+    right: 40px;  /* Position from the right */
+    font-size: 16px;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    background-color: white;
+    color: #FE2C02;
+    border: 2px solid #FE2C02;
+    cursor: pointer;
+    z-index: 2000; /* Ensure it stays on top of other elements */
+}
+
+/* Menu Button hover effect */
+#menuBtn:hover {
+    background-color: #d50000;
+    color: white;
+    border: 2px solid #d50000;
+}
+
+
+
+/* For the right-side container's scrollbar */
+.right-side::-webkit-scrollbar {
+    width: 10px; /* Adjust the width of the scrollbar */
+}
+
+/* Scrollbar thumb - make it a red dot */
+.right-side::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Set the thumb color */
+    border-radius: 0; /* Make it a circle */
+    width: 10px; /* Set the width to match the scrollbar */
+    height: 10px; /* Set the height to create a dot */
+}
+
+.right-side.scrolling::-webkit-scrollbar-thumb {
+    background-color: #FE2C02;
+}
+
+/* Optional: scrollbar track styling */
+.right-side::-webkit-scrollbar-track {
+    background: transparent;
+}

@@ -93,6 +93,12 @@ button:hover {
     /* border: 2px solid #2002fe; */
 }
 
+/* touchscreen tap*/
+.card.hovered {
+    border-color: #FE2C02 !important;
+}
+
+
 .card:active {
     cursor: grabbing;
     /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); */

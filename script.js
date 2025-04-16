@@ -105,6 +105,16 @@ $("button").hover(
 );
 */
 
+
+// Optional: simulate hover on tap
+$(document).on('touchstart', '.card', function () {
+    $(this).addClass('hovered');
+});
+$(document).on('touchend', '.card', function () {
+    $(this).removeClass('hovered');
+});
+
+
 // Button Click Animation (Press effect)
 $("button").on("mousedown", function () {
     gsap.to(this, { scale: 0.92, duration: 0.1, ease: "power1.inOut" });
@@ -113,7 +123,6 @@ $("button").on("mousedown", function () {
 $("button").on("mouseup mouseleave", function () {
     gsap.to(this, { scale: 1, duration: 0.2, ease: "elastic.out(1, 0.5)" }); // Slight bounce back
 });
-
 
 
 let lastText = "";

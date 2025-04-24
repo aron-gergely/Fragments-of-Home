@@ -1,30 +1,35 @@
 $(document).ready(function() {
 
+    setTimeout(() => {
+      $('#loadingOverlay').addClass('hidden');
+      setTimeout(() => $('#loadingOverlay').remove(), 500); // Fully remove after fade
+    }, 1000); // Shows spinner fill for 1 second
+ 
 
-    const imageArray = [
-        /*
-        "images/image01.png",
-        "images/image02.png",
-        "images/image03.png",
-        "images/image04.png",
-        "images/image05.png",
-        "images/image06.png",
-        "images/image07.png",
-        "images/image08.png",
-        "images/image09.png",
-        "images/image10.png",
-        "images/image11.png",
-        "images/image12.png"
-        */
-        "images/image13.png",
-        "images/image14.png",
-        "images/image15.png",
-        "images/image16.png",
-        "images/image17.png",
-        // "images/image18.png",
-        "images/image19.png",
-        "images/image20.png"  
-    ];
+    let isPopupClosed = false;  // Track if the popup has been closed
+    let lastText = "";
+    let lastImage = "";
+    let isTyping = false; // Track if text animation is in progress
+    let typingTimeout; // Typing animation function - Store the timeout reference
+
+
+    const imageArray = [];
+    for (let i = 1; i <= 30; i++) {
+      const num = String(i).padStart(2, '0'); // "01", "02", etc.
+      imageArray.push(`images/image${num}.jpg`);
+    }
+
+    const imageScroll = document.querySelector('.image-scroll');
+
+    imageArray.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'popup-image';
+      img.alt = '';
+      img.loading = 'lazy';
+      imageScroll.appendChild(img);
+    });
+
 
     const textArray = [
         "Take everything out. Refold. Put back in.", 
@@ -77,33 +82,13 @@ $(document).ready(function() {
         "For me, I don't mind digging around in a drawer (or bin) to get what I want", 
         "Figuring out where you fit on the hidden vs visual storage (x-axis) and the micro vs macro organization (y-axis) is a real game changer.", 
         "I just have to say it is uncanny how much your reflection looks like me.", 
-        "Nah, just cover it with something."
+        "Nah, just cover it with something.",
+        // 2025.04.22.-
+        "How many days do you usually change bedsheets?"
     ];
 
 
-/*
-// Button Hover Animation
-$("button").hover(
-    function () {
-        gsap.to(this, { 
-            backgroundColor: "#e50000", // Change to desired hover color
-            color: "#fff", // Change text color for contrast
-            // boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)", // Soft glow effect
-            duration: 0.3,
-            ease: "power2.out" 
-        });
-    },
-    function () {
-        gsap.to(this, { 
-            backgroundColor: "", // Revert to original
-            color: "", 
-            boxShadow: "0px 0px 0px rgba(0,0,0,0)", // Remove glow
-            duration: 0.3,
-            ease: "power2.out" 
-        });
-    }
-);
-*/
+
 
 
 // Optional: simulate hover on tap
@@ -124,11 +109,6 @@ $("button").on("mouseup mouseleave", function () {
     gsap.to(this, { scale: 1, duration: 0.2, ease: "elastic.out(1, 0.5)" }); // Slight bounce back
 });
 
-
-let lastText = "";
-let lastImage = "";
-let isTyping = false; // Track if text animation is in progress
-let typingTimeout; // Typing animation function - Store the timeout reference
 
 
 
@@ -231,6 +211,13 @@ $('#newImageBtn').click(function() {
     lastImage = randomImage;
 
     const imgElement = $('#pairContainer img');
+if (imgElement.length) {
+    gsap.to(imgElement, { opacity: 0, scale: 0.95, duration: 0.2, ease: "power2.out", onComplete: function() {
+        imgElement.attr('src', randomImage).on('load', function() {
+            gsap.to(imgElement, { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" });
+        });
+    }});
+}
 
     gsap.to(imgElement, { opacity: 0, scale: 0.95, duration: 0.2, ease: "power2.out", onComplete: function() {
         imgElement.attr('src', randomImage).on('load', function() {
@@ -322,10 +309,6 @@ savedCard.draggable({
     });
 
 
-    // Automatically generate a random pair when the page loads
-    $(document).ready(function() {
-        $('#randomizeBtn').trigger("click");
-    });
 
     // Card shadow during drag
     $(document).on("mousedown", ".card", function () {
@@ -346,63 +329,260 @@ savedCard.draggable({
     });
 
 
-    // Open popup when 'menu' button is clicked
-    $('#menuBtn').click(function() {
-        $('#popup').fadeIn(); // Show the popup
 
+let isPopupVisible = true; // Show on page load
+let isFirstLoad = true;  // Flag to track if it's the first load of the page
 
-    // Close popup when 'popup-close' button is clicked
-    $('#popupCloseBtn').click(function() {
-        $('#popup').fadeOut(); // Hide the popup
-    });
+$(document).ready(function () {$(document).ready(function () {
+    let isPopupVisible = true; // Show on page load
+    let isFirstLoad = true;  // Flag to track if it's the first load of the page
 
-    // Close popup if clicked outside of the popup content
-    $(document).click(function(event) {
-        if (!$(event.target).closest('.popup-content').length && !$(event.target).is('#menuBtn')) {
-            $('#popup').fadeOut(); // Hide the popup
+    console.log("Page loaded, showing popup...");
+    showPopup(); // Assuming this function exists elsewhere
+
+    // Initial text of the button
+    $('#menuBtn').text('Start');
+
+    // Menu button click event
+    $('#menuBtn').on('click', function () {
+        console.log("Menu button clicked");
+        
+        // If it's the first click, trigger the animation
+        if (isFirstLoad) {
+            $('#menuBtn').addClass('shrink'); // Trigger the shrink animation
+
+            // Delay text change until the width transition is finished
+            setTimeout(() => {
+                $('#menuBtn').text('?'); // Change the button text
+            }, 400); // Match the transition time (0.4s)
+
+            // Show or hide popup based on visibility
+            if (isPopupVisible) {
+                closePopup(); // Close popup if visible
+                isPopupVisible = false; // Update visibility state
+            } else {
+                showPopup(); // Show popup if not visible
+                isPopupVisible = true; // Update visibility state
+            }
+
+            isFirstLoad = false; // No need to shrink again
+        } else {
+            // Toggle the popup visibility on subsequent clicks
+            if (isPopupVisible) {
+                closePopup();
+                $('#menuBtn').text('?'); // Change text when popup closes
+            } else {
+                showPopup();
+                $('#menuBtn').text('X'); // Change text when popup opens
+            }
+            isPopupVisible = !isPopupVisible; // Toggle popup visibility
         }
     });
 });
-    
-// Show the popup when opeining page
-/* showPopup(); */
-    
-    // Show the popup and trigger blur animation
-function showPopup() {
-    // Disable scrolling on the body
-    $('body').css('overflow', 'hidden');
-    
-    // Start applying the blur immediately
-    $('#popup').css('backdrop-filter', 'blur(5px)');
-    
-    // Fade in the popup content after a slight delay for the blur to take effect
-    setTimeout(function() {
-        $('#popup').fadeIn(); // or use .show() for immediate visibility
-    }, 50); // You can adjust the delay here for how soon the blur starts
-}
 
-// Close the popup and reset blur
-function closePopup() {
-    // Hide the popup
-    $('#popup').fadeOut(); // or use .hide() to make it disappear
-    // Reset the blur effect immediately
-    $('#popup').css('backdrop-filter', 'blur(0px)');
-    
-    // Re-enable scrolling on the body
-    $('body').css('overflow', 'auto');
-}
 
-    // Open the popup when the menu button is clicked
-    $('#menuBtn').click(function() {
-        showPopup();
+    console.log("Page loaded, showing popup...");
+    showPopup(); // Assuming this function exists elsewhere
+
+    // Initial text of the button
+    $('#menuBtn').text('Start');
+
+    // Menu button click event
+    $('#menuBtn').on('click', function () {
+        console.log("Menu button clicked");
+        
+        // If it's the first click, trigger the animation
+        if (isFirstLoad) {
+            $('#menuBtn').addClass('shrink'); // Trigger the shrink animation
+
+            // Delay text change until the width transition is finished
+            setTimeout(() => {
+                $('#menuBtn').text('?'); // Change the button text
+            }, 400); // Match the transition time (0.4s)
+
+            // Show or hide popup based on visibility
+            if (isPopupVisible) {
+                closePopup(); // Close popup if visible
+                isPopupVisible = false; // Update visibility state
+            } else {
+                showPopup(); // Show popup if not visible
+                isPopupVisible = true; // Update visibility state
+            }
+
+            isFirstLoad = false; // No need to shrink again
+        } else {
+            // Toggle the popup visibility on subsequent clicks
+            if (isPopupVisible) {
+                closePopup();
+                $('#menuBtn').text('?'); // Change text when popup closes
+            } else {
+                showPopup();
+                $('#menuBtn').text('X'); // Change text when popup opens
+            }
+            isPopupVisible = !isPopupVisible; // Toggle popup visibility
+        }
     });
-
-    // Close the popup when the close button is clicked
-    $('#popupCloseBtn').click(function() {
-        closePopup();
-    });
-    
 });
+
+
+
+
+function showPopup() {
+    console.log("Showing popup...");
+
+    // Shuffle popup images before showing
+    shufflePopupImages();
+
+    $('body').css('overflow', 'hidden');
+
+    // Apply the backdrop filter (blur) immediately to the background
+    $('#popup').css('backdrop-filter', 'blur(5px)');
+
+    if (isFirstLoad) {
+        // On the first load, show the popup instantly without fade-in
+        $('#popup').show();
+        isPopupVisible = true;
+        isFirstLoad = false;  // Set the flag to false after the first load
+
+        // Fade in images within the popup after the popup is visible
+        $('.popup-image').each(function(index) {
+            $(this).addClass('visible');
+        });
+    } else {
+        // For subsequent openings, apply the fade-in
+        setTimeout(() => {
+            $('#popup').fadeIn(500, function() {
+                isPopupVisible = true;
+                console.log("Popup is visible:", isPopupVisible);
+
+                // Fade in images within the popup after the popup is visible
+                $('.popup-image').each(function(index) {
+                    $(this).delay(index * 100).queue(function(next) {
+                        $(this).addClass('visible');
+                        next();
+                    });
+                });
+            });
+        }, 0);
+    }
+}
+
+
+function closePopup() {
+    console.log("Closing popup...");
+    $('#popup').fadeOut();
+    $('#popup').css('backdrop-filter', 'blur(0px)');
+    $('body').css('overflow', 'auto');
+    isPopupVisible = false;
+    console.log("Popup is closed:", isPopupVisible);
+
+    if (!isPopupClosed) {
+        isPopupClosed = true;  // Set the flag to true on first close
+        $('#randomizeBtn').trigger("click");  // Trigger the randomization after closing the popup
+    }
+}
+  
+});
+
+
+
+// POPUP IMAGE ATOSCROLL
+
+$(document).ready(function() {
+    const scrollContainer = $('.image-scroll'); // The container that will scroll
+    const defaultSpeed = 0.5; // Default speed of scroll
+    const minSpeed = 0.05; // Slowest scroll speed before stopping
+    const maxSpeed = 0.5; // Maximum speed of scroll
+    let currentSpeed = defaultSpeed; // Start with the default speed
+    let scrollTop = scrollContainer.scrollTop(); // Initial scroll position
+    let isHovered = false; // Track if an image is being hovered over
+    let scrollInterval; // Variable to hold the interval ID
+
+    // Smooth scrolling function
+    function autoScroll() {
+        const scrollHeight = scrollContainer[0].scrollHeight;
+        const containerHeight = scrollContainer.height();
+
+        // If we've reached the bottom of the scroll container, reset to the top
+        if (scrollTop + containerHeight >= scrollHeight) {
+            scrollTop = 0;
+        } else {
+            scrollTop += currentSpeed;
+        }
+
+        // Scroll to the new scrollTop position
+        scrollContainer.scrollTop(scrollTop);
+
+        // Request the next animation frame for smoothness
+        if (scrollInterval) {
+            requestAnimationFrame(autoScroll);
+        }
+    }
+
+    function startAutoScroll() {
+        // Start the auto-scrolling using requestAnimationFrame for smoothness
+        if (!scrollInterval) {
+            scrollInterval = requestAnimationFrame(autoScroll);
+        }
+    }
+
+    function stopAutoScroll() {
+        // Gradually decrease the speed when hovering
+        const decelerationInterval = setInterval(() => {
+            if (currentSpeed > minSpeed) {
+                currentSpeed -= 0.02; // Gradually decrease the speed (slower deceleration)
+            } else {
+                currentSpeed = minSpeed; // Ensure we don’t go below the minimum speed
+                clearInterval(decelerationInterval); // Stop the deceleration process
+                // Stop the auto-scroll (no more animation frames)
+                cancelAnimationFrame(scrollInterval);
+                scrollInterval = null;
+            }
+        }, 16); // Keep the interval for smooth deceleration (16ms = ~60fps)
+    }
+
+    function resumeAutoScroll() {
+        // Gradually increase the speed back to the default speed when hover ends
+        const accelerationInterval = setInterval(() => {
+            if (currentSpeed < maxSpeed) {
+                currentSpeed += 0.02; // Gradually increase the speed (slower acceleration)
+            } else {
+                currentSpeed = maxSpeed; // Ensure we don’t exceed the maximum speed
+                clearInterval(accelerationInterval); // Stop the acceleration process
+            }
+        }, 16); // Keep the interval for smooth acceleration (16ms = ~60fps)
+    }
+
+    // Start the auto-scrolling when the page loads
+    startAutoScroll();
+
+    // Stop scrolling when hovering over an image
+    scrollContainer.on('mouseenter', 'img', function() {
+        stopAutoScroll();
+    });
+
+    // Resume scrolling when mouse leaves the scroll container
+    scrollContainer.on('mouseleave', function() {
+        resumeAutoScroll();
+        startAutoScroll(); // Restart the auto-scrolling after accelerating
+    });
+});
+
+
+
+// POPUP IMAGES RANDOM ORDER
+
+function shufflePopupImages() {
+    const container = $('.image-scroll');
+    const images = container.children('.popup-image');
+
+    // Convert to array and shuffle
+    const shuffled = images.toArray().sort(() => Math.random() - 0.5);
+
+    // Re-append shuffled images
+    container.append(shuffled);
+}
+
 
 
 

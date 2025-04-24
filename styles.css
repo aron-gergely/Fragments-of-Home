@@ -4,9 +4,49 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: 'YourFontName'; /* you choose the name */
+    src: url('fonts/Vevey-HumanKind.woff2') format('woff2'),
+         url('fonts/Vevey-Positive.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*
+img {
+  filter: grayscale(100%);
+}
+*/
+
+
+/* ALL COLORS */
+:root {
+  --color-left: white;
+  --color-right: #f4f4f4;
+  --color-primary: #e91a32;
+  --color-primary2: #c9162c;
+  --color-accent: #3f3f3f;
+    
+  --color-left-text: var(--color-primary);
+ 
+  --color-button1: var(--color-primary);
+  --color-button1-hover: var(--color-primary);
+  --color-button1-text: var(--color-primary);
+  --color-button1-text-hover: white;
+    
+  --color-button2: var(--color-primary);
+  --color-button2-hover: var(--color-primary);
+  --color-button2-text: var(--color-primary);
+  --color-button2-text-hover: white;
+    
+  --color-card: rgba(255, 255, 255, 0.9);;
+  --color-card-text: var(--color-primary);
+}
+
 body {
-    font-family: Helvetica, Arial, sans-serif;
-    background-color: #f2f2f2;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.4;
+    background-color: var(--color-right);
 }
 
 .container {
@@ -20,8 +60,8 @@ body {
     padding: 40px;
     overflow: hidden;
     /* padding-top: 40px; */
-    border-right: 1px solid 0;
-    background-color: white;
+    border-right: 1px solid var(--color-primary);
+    background-color: var(--color-left);
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Allow space between items */
@@ -35,10 +75,10 @@ body {
 }
 
 button {
-    padding: 10px 25px;
-    background-color: #FE2C02;
-    color: white;
-    border: none;
+    padding: 10px 35px;
+    background-color: transparent;
+    border: 1px solid var(--color-button1);
+    color: var(--color-button1-text);
     border-radius: 0;
     cursor: pointer;
     font-size: 16px;
@@ -46,7 +86,9 @@ button {
 }
 
 button:hover {
-    background-color: #d50000;
+    background-color: var(--color-button1-hover);
+    border: 1px solid var(--color-button1-hover);
+    color: var(--color-button1-text-hover);
 }
 
 #pairContainer img {
@@ -59,7 +101,7 @@ button:hover {
     font-size: 16px;
     text-align: left;
     margin-top: 20px;
-    color: #FE2C02;
+    color: var(--color-left-text);
 }
 
 #savedPairs {
@@ -76,26 +118,28 @@ button:hover {
 .card {
     width: 250px;
     height: auto;
-    background-color: white !important; /* Forces the color */
+    background-color: var(--color-card) !important; /* Forces the color */
     /* border-color: #f2f2f2 !important; */
-    border: 2px solid #f2f2f2 !important;
+    border: 1px solid var(--color-right) !important;
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     justify-content: left;
     align-items: middle;
     padding: 10px;
+    /* margin: 10px; */
     cursor: grab;
     position: absolute; /* Allow cards to be placed anywhere */
 }
 
 .card:hover {
-    border-color: #FE2C02 !important;
+    border-color: var(--color-primary) !important;
     /* border: 2px solid #2002fe; */
 }
 
 /* touchscreen tap*/
 .card.hovered {
-    border-color: #FE2C02 !important;
+    border-color: var(--color-primary) !important;
 }
 
 
@@ -115,7 +159,7 @@ button:hover {
     text-align: left;
     font-size: 16px;
     margin-top: 20px;
-    color: #FE2C02;
+    color: var(--color-primary);
     margin-bottom: 20px;
 }
 
@@ -172,25 +216,26 @@ button:hover {
 #saveBtn {
     background-color: transparent;
     font-weight: normal;
-    color: #FE2C02;
-    border: 2px solid #FE2C02;
-    width: 80px;
+    color: var(--color-button2-text);
+    border: 1px solid var(--color-button2);
+    /* width: 80px; */
     border-radius: 0;
+    padding: 10px 35px;
     margin-top: auto; /* Pushes the button to the bottom */
     transition: background-color 0.2s ease, color 0.2s ease; /* Apply transition only to background-color and color */
 }
 
 
 #saveBtn:hover {
-    background-color: #d50000;
-    color: white;
-    border: 2px solid #d50000;
+    background-color: var(--color-button2-hover);
+    color: var(--color-button2-text-hover);
+    border: 1px solid var(--color-button2-hover);
 }
 
 #saveBtn:disabled {
     background-color: transparent;
-    color: #FE2C02;
-    border: 2px solid #FE2C02;
+    color: var(--color-button2-text);
+    border: 1px solid var(--color-button2);
     cursor: not-allowed;
 }
 
@@ -203,7 +248,8 @@ button:hover {
 */
 
 #newImageBtn, #newTextBtn {
-    height: 40px;
+    min-height: 40px;
+    /* width: 120px; */
     margin-bottom: 0;
     font-weight: normal;
 }
@@ -217,7 +263,7 @@ button:hover {
     width: 25px;
     height: 25px;
     border-radius: 0%; /* Circle vs rectangle shape */
-    background-color: #FE2C02;
+    background-color: var(--color-primary);
     color: white;
     font-size: 16px;
     /* font-weight: bold; */
@@ -237,7 +283,7 @@ button:hover {
 
 
 .deleteBtn:hover {
-    background-color: #d50000; /* Darker red on hover */
+    background-color: var(--color-primary);
 }
 
 /* Style the X inside the button */
@@ -256,13 +302,12 @@ button:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #FE2C02;
+    color: var(--color-primary);
     background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent */
     backdrop-filter: blur(5px); /* Apply blur effect to the background */
     transition: backdrop-filter 0.3s ease; /* Animate the blur effect */
-    padding: 40px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 3000;
+    z-index: 2000;
 }
 
 /* Popup content style */
@@ -271,71 +316,228 @@ button:hover {
     width: 65vw;
 }
 
-/* Close button style */
-.popup-close {
-    position: fixed;
-    bottom: 40px; /* Position from the bottom */
-    right: 40px;  /* Position from the right */
-    font-size: 16px;
-    height: 40px;
-    width: 40px;
-    padding: 0;
-    background-color: white;
-    color: #FE2C02;
-    border: 2px solid #FE2C02;
-    cursor: pointer;
+.popup-image {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.popup-close:hover {
-    background-color: #d50000;
-    color: white;
-    border: 2px solid #d50000;
+.popup-image.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.popup {
+    display: none; /* Ensure the popup is hidden initially */
 }
 
 
-/* Style for Menu Button */
+
+#buttonWrapper {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    z-index: 9998;
+}
+
 #menuBtn {
-    position: fixed;
-    bottom: 40px; /* Position from the bottom */
-    right: 40px;  /* Position from the right */
     font-size: 16px;
     height: 40px;
-    width: 40px;
+    width: 100px;
     padding: 0;
-    background-color: white;
-    color: #FE2C02;
-    border: 2px solid #FE2C02;
+    background-color: var(--color-left);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
     cursor: pointer;
-    z-index: 2000; /* Ensure it stays on top of other elements */
+    box-sizing: border-box;
+    transition: width 0.4s ease; /* Add transition back */
 }
 
-/* Menu Button hover effect */
+#menuBtn.shrink {
+    width: 40px;
+}
+
 #menuBtn:hover {
-    background-color: #d50000;
+    background-color: var(--color-primary);
     color: white;
-    border: 2px solid #d50000;
+    border: 1px solid var(--color-primary);
 }
 
 
 
-/* For the right-side container's scrollbar */
-.right-side::-webkit-scrollbar {
-    width: 10px; /* Adjust the width of the scrollbar */
+#popup {
+    display: none;
+    /* Add other styles for your popup */
 }
 
-/* Scrollbar thumb - make it a red dot */
-.right-side::-webkit-scrollbar-thumb {
-    background-color: transparent; /* Set the thumb color */
-    border-radius: 0; /* Make it a circle */
-    width: 10px; /* Set the width to match the scrollbar */
-    height: 10px; /* Set the height to create a dot */
+#popup.open {
+    display: block; /* Show the popup when it has the 'open' class */
 }
 
-.right-side.scrolling::-webkit-scrollbar-thumb {
-    background-color: #FE2C02;
+
+
+
+.two-columns {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-/* Optional: scrollbar track styling */
-.right-side::-webkit-scrollbar-track {
-    background: transparent;
+.popup-left {
+  width: 30vw;
+  padding: 0 40px 0 40px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  border-right: 1px solid var(--color-primary);
+    
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
 }
+
+
+.image-scroll {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* Hide the scrollbar */
+}
+
+.image-scroll img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 8px;
+}
+
+
+
+.popup-right {
+  width: 70vw;
+  padding: 40px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.popup-text {
+  overflow-y: auto;
+}
+
+.popup-text p {
+  margin-bottom: 1em;
+}
+
+.credits-wrapper {
+  position: fixed;
+  bottom: 40px;
+  display: flex;
+  gap: 40px; /* space between left and right */
+}
+
+.credits-left,
+.credits-right {
+  color: var(--color-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.credits-left p,
+.credits-right p {
+  margin-bottom: 0;
+}
+
+
+.popup-content {
+  width: 100%;
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.4;
+  padding: 0 0 0 0; /* top, right, bottom, left — adjust if needed */
+  color: var(--color-primary);
+  text-align: left;
+}
+
+
+.popup-content h1 {
+  font-size: clamp(2rem, 8vw, 6rem);
+  line-height: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+
+.popup-content h2 {
+  font-size: 32px;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.inline-h2 {
+  font-size: 32px;
+  margin-right: 15px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.popup-content strong {
+  font-weight: 600;
+}
+
+
+
+/* LOADER */
+
+#loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+#loadingOverlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-wrapper {
+  width: 70px;
+  height: 70px;
+}
+
+.loader-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(0deg); /* Start at top */
+}
+
+.loader-path {
+  fill: none;
+  stroke: var(--color-primary); /* Or any color you want */
+  stroke-width: 0.6px;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: fillCircle 1s ease forwards;
+}
+
+@keyframes fillCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+

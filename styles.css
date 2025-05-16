@@ -18,6 +18,15 @@ img {
 }
 */
 
+body, html {
+    overflow: hidden;
+    height: 100%;
+}
+
+body.grayscale img {
+    filter: grayscale(100%) !important;
+    transition: filter 0.3s ease;
+}
 
 /* ALL COLORS */
 :root {
@@ -44,7 +53,8 @@ img {
 }
 
 body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-weight: 400;
     line-height: 1.4;
     background-color: var(--color-right);
 }
@@ -91,6 +101,78 @@ button:hover {
     color: var(--color-button1-text-hover);
 }
 
+
+#pairContainer p[contenteditable="true"] {
+    outline: none;
+    /*  border-bottom: 1px dashed var(--color-primary); Visual cue it's editable */
+    padding-bottom: 4px;
+    cursor: text;
+}
+
+#pairContainer p[contenteditable="true"] {
+    outline: none;
+    -webkit-user-modify: read-write-plaintext-only; /* Prevent grammar/spelling underlines on WebKit */
+}
+
+/* Customize selection color */
+::selection {
+    background: var(--color-primary); /* Red highlight background */
+    color: white; /* White highlighted text */
+}
+
+/* For Firefox */
+::-moz-selection {
+    background: var(--color-primary);
+    color: white;
+}
+
+
+
+.image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.image-wrapper:hover .upload-overlay {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.upload-btn {
+    padding: 10px 35px;
+    background-color: var(--color-left);
+    border: 1px solid var(--color-button1);
+    color: var(--color-button1-text);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 0;
+    height: 40px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.upload-btn:hover {
+    background-color: var(--color-button1-hover);
+    color: var(--color-button1-text-hover);
+    border: 1px solid var(--color-button1-hover);
+}
+
+
+
 #pairContainer img {
     display: block; /* Ensures proper spacing */
     width: 100%;
@@ -99,6 +181,7 @@ button:hover {
 
 #pairContainer p {
     font-size: 16px;
+    line-height: 1.3em;
     text-align: left;
     margin-top: 20px;
     color: var(--color-left-text);
@@ -109,7 +192,7 @@ button:hover {
     display: flex;
     flex-wrap: wrap;
     padding: 0;
-    min-height: 1000%;
+    min-height: 5000px;
     width: 100%;
     box-sizing: border-box;
     overflow: visible; /* Allow dragging outside the container */
@@ -118,6 +201,7 @@ button:hover {
 .card {
     width: 250px;
     height: auto;
+    line-height: 1.3em;
     background-color: var(--color-card) !important; /* Forces the color */
     /* border-color: #f2f2f2 !important; */
     border: 1px solid var(--color-right) !important;
@@ -158,10 +242,32 @@ button:hover {
 .card p {
     text-align: left;
     font-size: 16px;
-    margin-top: 20px;
+    margin-top: 15px;
     color: var(--color-primary);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    
+    white-space: pre-wrap; /* This keeps line breaks and respects <br> tags */
+    word-wrap: break-word;
 }
+
+.card.pulse-glow {
+    animation: pulseGlow 2s infinite;
+    box-shadow: 0 0 15px rgba(233, 26, 50, 0.4); /* var(--color-primary) with 40% opacity */
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 5px rgba(233, 26, 50, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(233, 26, 50, 0.4); /* Brighter at pulse peak */
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(233, 26, 50, 0.4);
+    }
+}
+
+
 
 /*
 .draggable-container {
@@ -332,12 +438,15 @@ button:hover {
 }
 
 
-
 #buttonWrapper {
     position: absolute;
     bottom: 40px;
     right: 40px;
     z-index: 9998;
+    display: flex;
+    
+    align-items: center;
+    gap: 10px; /* Space between buttons */
 }
 
 #menuBtn {
@@ -350,7 +459,7 @@ button:hover {
     border: 1px solid var(--color-primary);
     cursor: pointer;
     box-sizing: border-box;
-    transition: width 0.4s ease; /* Add transition back */
+    transition: background-color 0.2s ease, color 0.2s ease, width 0.4s ease;
 }
 
 #menuBtn.shrink {
@@ -358,6 +467,44 @@ button:hover {
 }
 
 #menuBtn:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border: 1px solid var(--color-primary);
+}
+
+#savePdfBtn {
+    font-size: 16px;
+    height: 40px;
+    padding: 10px 35px;
+    background-color: var(--color-left);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    margin-left: 10px; /* Add some space between the buttons */
+}
+
+#savePdfBtn:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border: 1px solid var(--color-primary);
+}
+
+#savePdfBtn.disabled {
+    cursor: not-allowed;
+    background-color: var(--color-left);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+#toggleGrayscale {
+    background-color: var(--color-left);
+    height: 40px;
+    display: none; /* Hidden by default */
+}
+
+#toggleGrayscale:hover {
     background-color: var(--color-primary);
     color: white;
     border: 1px solid var(--color-primary);
@@ -416,7 +563,7 @@ button:hover {
 
 
 .popup-right {
-  width: 70vw;
+  width: 60vw;
   padding: 40px;
   overflow: hidden;
   display: flex;
@@ -431,6 +578,14 @@ button:hover {
 
 .popup-text p {
   margin-bottom: 1em;
+}
+
+.popup-text p{
+    line-height: 1.3rem;
+}
+
+.popup-text h1{
+    line-height: 3rem;
 }
 
 .credits-wrapper {
@@ -456,7 +611,7 @@ button:hover {
 .popup-content {
   width: 100%;
   margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   line-height: 1.4;
   padding: 0 0 0 0; /* top, right, bottom, left — adjust if needed */
   color: var(--color-primary);

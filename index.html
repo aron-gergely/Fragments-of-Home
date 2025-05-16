@@ -9,6 +9,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 <body>
@@ -31,8 +33,8 @@
             <div class="button-container">
                 <div class="left-buttons">
                     <div class="row">
-                        <button id="newImageBtn">New image</button>
-                        <button id="newTextBtn">New text</button>
+                        <button id="newImageBtn">New Image</button>
+                        <button id="newTextBtn">New Text</button>
                     </div>
                     <button id="randomizeBtn">Randomize</button>
                 </div>
@@ -47,6 +49,8 @@
 
     <!-- Add the button wrapper here -->
     <div id="buttonWrapper">
+        <button id="savePdfBtn" style="display: none;">Save</button>
+        <button id="toggleGrayscale">Grayscale: ON</button>
         <button id="menuBtn">Start</button>
     </div>
     
@@ -64,17 +68,18 @@
             <!-- Right side: about, guide, info -->
             <div class="popup-right">
                 <div class="popup-text">
-                <h1>FRAGMENTS OF HOME</h1>
+                <h1 style="margin-bottom: 0;">FRAGMENTS OF HOME</h1>
                     
                 <h2>ABOUT</h2>
-                <p>This project serves as an exploration of the hybrid essay, a form that blends various media to present fragmented narratives. By combining text and images in a non-linear, random manner, the project mimics the hybrid essay's open-ended and associative nature. Like a visual or collage essay, the project encourages users to experiment with narrative construction, revealing how seemingly unrelated elements—text and image—can coexist and interact to create new meanings, interpretations, and visual stories.</p>
-                <p>The content of the project centers around the themes of home, organizing, and everyday domestic life. Texts and images are sourced from online communities—such as Reddit threads and Facebook groups—where people share personal advice, frustrations, and reflections on managing their spaces. These materials, once decontextualized and paired at random, take on new poetic or unexpected associations. The randomness mirrors the often chaotic, improvised nature of organizing a home, while the act of arranging these pairs on a virtual canvas invites users to create their own systems of meaning. Whether through thematic groupings, visual rhythms, or narrative fragments, this second layer of interaction echoes how we make sense of messiness—both in our environments and in the stories we tell.</p>
+                <p>This project serves as an exploration of the hybrid essay, a form that blends various media to present fragmented narratives. By combining text and&nbsp;images in a non-linear, random manner, the project mimics the hybrid essay's open-ended and associative nature. Like a collage, the project encourages users to experiment with narrative construction, revealing how seemingly unrelated elements can coexist and interact to create new meanings, interpretations, and visual stories.</p>
+                <p>The content of the project centers around the themes of home, organizing, and everyday domestic life. Texts and images are sourced from&nbsp;online communities, such as Reddit threads and Facebook groups, where people share personal advice, frustrations, and reflections on managing their spaces. These materials, once decontextualized and paired at random, take on new unexpected associations. The&nbsp;randomness mirrors the often chaotic, improvised nature of&nbsp;organizing a&nbsp;home, while the act of&nbsp;arranging these pairs on a&nbsp;virtual canvas invites users to&nbsp;create their own systems of&nbsp;meaning. Whether&nbsp;through thematic groupings, visual rhythms, or&nbsp;narrative fragments, this second layer of interaction echoes how we make sense of messiness — both in our environments and in the stories we tell.</p>
                     
-                <h2>GUIDE</h2>
-                <p><span class="inline-h2">01</span>Create image-text pairs using the <strong>[New image]</strong> and <strong>[New text]</strong> buttons, or generate random pairs by clicking <strong>[Randomize]</strong>.</p>
-                <p><span class="inline-h2">02</span>Add the combinations you like to your workspace (right side) as cards with the arrow button <strong>[➔]</strong>.</p>
-                <p><span class="inline-h2">03</span>Organize the cards to your liking: Drag them around, create new associations or stories by experimenting with the layout.</p>
-                <p><span class="inline-h2">04</span>Additionally, you can save your layout as an image to your device. (Coming soon...)</p>  
+                <h2 style="margin-bottom: 22px;">GUIDE</h2>
+                <p><span class="inline-h2">01</span>Create image-text pairs using the <strong>[New&nbsp;Image]</strong> and <strong>[New&nbsp;Text]</strong> buttons, or generate random pairs by clicking <strong>[Randomize]</strong>.</p>
+                <p><span class="inline-h2">02</span>If you feel even more inspired, you can also rewrite the text and upload your own images.</p>
+                <p><span class="inline-h2">03</span>Add these combinations to your workspace (on the right) with the arrow button <strong>[➔]</strong>.</p>
+                <p><span class="inline-h2">04</span>Organize them to your liking: Drag them around, create new associations or stories by experimenting with the layout.</p>
+                <p><span class="inline-h2">05</span>Additionally, you can <strong>[Save]</strong> your layout as a PDF.</p>  
                 </div>
 
                 <div class="credits-wrapper">

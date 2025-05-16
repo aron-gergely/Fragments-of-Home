@@ -4,7 +4,9 @@ $(document).ready(function() {
       $('#loadingOverlay').addClass('hidden');
       setTimeout(() => $('#loadingOverlay').remove(), 500); // Fully remove after fade
     }, 1000); // Shows spinner fill for 1 second
- 
+
+    $('body').addClass('grayscale');
+    $('#toggleGrayscale').text('Grayscale: ON');
 
     let isPopupClosed = false;  // Track if the popup has been closed
     let lastText = "";
@@ -12,12 +14,36 @@ $(document).ready(function() {
     let isTyping = false; // Track if text animation is in progress
     let typingTimeout; // Typing animation function - Store the timeout reference
 
+    let cardOrder = []; // Tracks card stacking order
+    let currentZIndex = 100; // Starting z-index value
 
     const imageArray = [];
     for (let i = 1; i <= 30; i++) {
       const num = String(i).padStart(2, '0'); // "01", "02", etc.
       imageArray.push(`images/image${num}.jpg`);
     }
+
+
+let lastExportTime = '';
+let exportCounter = 1;
+
+function generateExportFilename() {
+    const now = new Date();
+    const datePart = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+    const timePart = `${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+    const currentTime = `${datePart}${timePart}`;
+
+    if (currentTime === lastExportTime) {
+        exportCounter++;
+    } else {
+        exportCounter = 1;
+        lastExportTime = currentTime;
+    }
+
+    const counterPart = String(exportCounter).padStart(2, '0');
+    return `Fragments-of-Home_${currentTime}_${counterPart}.pdf`;
+}
+
 
     const imageScroll = document.querySelector('.image-scroll');
 
@@ -84,11 +110,67 @@ $(document).ready(function() {
         "I just have to say it is uncanny how much your reflection looks like me.", 
         "Nah, just cover it with something.",
         // 2025.04.22.-
-        "How many days do you usually change bedsheets?"
+        "How many days do you usually change bedsheets?",
+        "chaos",
+        "comfort",
+        "fresh start",
+        "this is where I feel most myself",
+        "every corner tells a little story",
+        "one day i’ll finally do it (i promise)",
+        "it’s messy, but it’s ours",
+        "home is a work in progress",
+        "unpacking slowly, one memory at a time",
+        "always starting over",
+        "it’s ours, even in the chaos",
+        "hidden treasures in every drawer",
+        "still figuring it out",
+        "halfway there (whatever that means)",
+        "organized... for now",
+        "just don’t open that closet",
+        "Some things I’ll organize when I have time. Other things just stay where they are, and that’s fine for now.",
+    "I keep meaning to sort that pile but life keeps getting in the way",
+    "its not perfectly tidy, but it works for us!",
+    "Every time I try to clear things out I find something I’m not ready to let go of",
+    "one day I will have everything in order. today isn’t that day xd",
+    "isn’t finished but feels like home anyways",
+    "sometimes i organize my space to feel productive",
+        
+        "Sometimes I just move stuff from one pile to another and call it progress.",
+        "Where is this supposed to live? Seriously, where?",
+        "I have perfectly good drawers, but my clothes live on chairs",
+        "I’m just looking for a system that works without me actually having to stick to it.",
+        "I have a ‘why do I own this?’ problem",
+        "Every time I try to organize, I end up sitting on the floor going through old photos:)",
+        "at this point, my piles have their own organizational logic. please don’t touch them :)",
+        "‘throw it all out’ vs ‘what if I need this one day?’",
+        
+
+
+
+
+
+    
     ];
 
 
+function updateSavePdfButtonState() {
+    if ($('#savedPairs .card').length === 0) {
+        $('#savePdfBtn').prop('disabled', true).addClass('disabled');
+    } else {
+        $('#savePdfBtn').prop('disabled', false).removeClass('disabled');
+    }
+}
 
+$('#toggleGrayscale').click(function() {
+    $('body').toggleClass('grayscale');
+    
+    // Optional: Update button text
+    if ($('body').hasClass('grayscale')) {
+        $(this).text('Grayscale: ON');
+    } else {
+        $(this).text('Grayscale: OFF');
+    }
+});
 
 
 // Optional: simulate hover on tap
@@ -98,6 +180,27 @@ $(document).on('touchstart', '.card', function () {
 $(document).on('touchend', '.card', function () {
     $(this).removeClass('hovered');
 });
+
+    $('#pairContainer').on('focus', 'p[contenteditable="true"]', function () {
+    const el = this;
+    // Move cursor to the end of content
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false); // Collapse to end
+    sel.removeAllRanges();
+    sel.addRange(range);
+});
+    
+    function placeCaretAtEnd(element) {
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(element);
+    range.collapse(false); // Collapse range to the end
+    selection.removeAllRanges();
+    selection.addRange(range);
+    element.focus();
+}
 
 
 // Button Click Animation (Press effect)
@@ -139,6 +242,7 @@ function typeText(target, text) {
         } else {
             isTyping = false; // Mark typing as complete
             enableSaveButton(); // Enable the Save button when done
+            placeCaretAtEnd(target[0]); // Focus and place caret at end
         }
     }
 
@@ -163,11 +267,18 @@ $('#randomizeBtn').click(function() {
 
     // Create a new pair (with invisible text and image initially)
     const newPair = $(`
-        <div class="pair" style="opacity: 0;">
-            <img src="${randomImage}" alt="Random Image" style="opacity: 0;">
-            <p></p> <!-- Start with empty text -->
+        <div class="pair" style="position: relative; opacity: 0;">
+            <div class="image-wrapper" style="position: relative;">
+                <img src="${randomImage}" alt="Random Image" style="opacity: 0;">
+                <div class="upload-overlay">
+                    <button class="upload-btn">Upload Image</button>
+                    <input type="file" accept="image/*" class="upload-input" style="display: none;">
+                </div>
+            </div>
+            <p contenteditable="true" spellcheck="false"></p>
         </div>
     `);
+
 
     // First fade out old elements and scale down the image
     const oldPair = $('#pairContainer .pair');  // Get the old pair
@@ -179,6 +290,21 @@ $('#randomizeBtn').click(function() {
     gsap.to(oldPair, { opacity: 0, duration: 0.3, ease: "power2.out", onComplete: function() {
         // Now, add the new pair to the container
         $('#pairContainer').html(newPair);
+
+        newPair.find('.upload-btn').on('click', function () {
+            $(this).siblings('.upload-input').trigger('click');
+        });
+
+        newPair.find('.upload-input').on('change', function (e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    newPair.find('img').attr('src', event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
         const textElement = newPair.find("p");
         const imgElement = newPair.find("img");
@@ -263,8 +389,23 @@ $('#saveBtn').click(function() {
         </div>
     `);
 
+    // Disable Save button immediately after adding the card
+    disableSaveButton();
+
+    const scrollOffset = $('.right-side').scrollTop();
+    savedCard.css('top', `${scrollOffset}px`); // 30px from current viewport top
     // Append the saved card to the saved pairs container
     $('#savedPairs').append(savedCard);
+    updateSavePdfButtonState(); // Add this immediately after appending the new card
+
+    savedCard.addClass('pulse-glow');
+
+    // Disable editing after saving
+    savedCard.find('p').removeAttr('contenteditable');
+    
+    // Add new card to the layer order and set its z-index
+    cardOrder.push(savedCard);
+    savedCard.css("z-index", currentZIndex + cardOrder.length);
 
     // Animate the saved card (pop effect)
     gsap.from(savedCard, { opacity: 0, scale: 0.8, duration: 0.4, ease: "back.out(1.5)" });
@@ -280,14 +421,24 @@ $('#saveBtn').click(function() {
     setTimeout(() => savedCard.removeClass("pulse"), 600);
 
 
-// Initialize jQuery UI draggable
-savedCard.draggable({
-    containment: '#savedPairs',  // Restrict dragging within the #savedPairs container
-    cursor: "move",
-    snap: ".card",
-    snapMode: "both",
-    snapTolerance: 20,
-});
+    // Initialize jQuery UI draggable
+    savedCard.draggable({
+        containment: '#savedPairs',  // Restrict dragging within the #savedPairs container
+        cursor: "move",
+        snap: ".card",
+        snapMode: "both",
+        snapTolerance: 20,
+    });
+
+    // Rremove glow on interaction
+    savedCard.on('mousedown touchstart dragstart', function () {
+        $(this).removeClass('pulse-glow');
+    });
+
+    // Re-enable Save button on user interaction with the new card
+    savedCard.on('mousedown touchstart', function () {
+        enableSaveButton();
+    });
 
 
 
@@ -298,15 +449,35 @@ savedCard.draggable({
         // Animate the card disappearing
         gsap.to(savedCard, { opacity: 0, scale: 0.5, duration: 0.2, ease: "power2.out", onComplete: function() {
             savedCard.remove(); // Remove the card after the animation
+                        updateSavePdfButtonState(); // Add this after removing the card
+
+            
+            // Remove the deleted card from the order array
+            cardOrder = cardOrder.filter(card => card[0] !== savedCard[0]);
+
+            // Recalculate z-index for remaining cards
+            cardOrder.forEach((card, index) => {
+                card.css("z-index", currentZIndex + index);
+            });
         }});
     });
 
     // Ensure clicked card is always on top
     $(document).on("mousedown", ".card", function () {
-        $(".card").css("z-index", ""); 
-        $(this).css("z-index", "1000"); 
+        const clickedCard = $(this);
+
+        // Remove the clicked card from its current position in the order array
+        cardOrder = cardOrder.filter(card => card[0] !== clickedCard[0]);
+
+        // Add it back on top (last in array)
+        cardOrder.push(clickedCard);
+
+        // Update z-index based on new order
+        cardOrder.forEach((card, index) => {
+            card.css("z-index", currentZIndex + index);
         });
     });
+});
 
 
 
@@ -327,6 +498,97 @@ savedCard.draggable({
             ease: "power2.out" 
         });
     });
+
+$('#savePdfBtn').click(function() {
+    const target = document.querySelector('.right-side');
+    const currentYear = new Date().getFullYear();
+
+    // Create and append the credits element
+    const credits = $(`
+        <div id="exportCredits" style="
+            width: 100%;
+            color: var(--color-primary);
+            text-align: left;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.3rem;
+            margin-top: 30px;
+            position: absolute;
+            left: 0;
+        ">
+            <div style="
+                border-top: 1px solid var(--color-primary);
+                margin: 0 10px; /* Add 10px left and right space for the line */
+                padding-top: 15px; /* More space between line and text */
+            "></div>
+            <div style="padding-left: 10px; padding-right: 10px;">
+                Fragments of Home<br>&copy; ${currentYear}
+            </div>
+        </div>
+    `);
+
+    const maxBottom = Math.max(...$('.card').map(function() {
+        return $(this).position().top + $(this).outerHeight();
+    }).get());
+
+    let extraSpace = 100;
+    let finalHeight = 0;
+
+    do {
+        credits.css('top', `${maxBottom + extraSpace}px`);
+        $('#savedPairs').append(credits);
+
+        const creditsBottom = $('#exportCredits').position().top + $('#exportCredits').outerHeight() + 110;
+        finalHeight = creditsBottom;
+        
+        if (finalHeight < 1500) {
+            $('#exportCredits').remove();
+            extraSpace += 50; // Increase space dynamically
+        }
+    } while (finalHeight < 1500);
+
+    $('.right-side').scrollTop(0);
+    const originalOverflow = $('.right-side').css('overflow');
+    const originalBgColor = $('.right-side').css('background-color');
+
+    $('.right-side').css('overflow', 'visible').css('background-color', '#ffffff');
+
+    $('.card').each(function() {
+        this.style.setProperty('border', '1px solid rgba(255, 255, 255, 0.1)', 'important');
+    });
+
+    html2canvas(target, { 
+        backgroundColor: '#ffffff',
+        scale: 3,
+        scrollX: 0,
+        scrollY: 0,
+        width: target.scrollWidth,
+        height: finalHeight
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pxToMm = 0.264583;
+        const imgWidthMm = canvas.width * pxToMm;
+        const imgHeightMm = canvas.height * pxToMm;
+
+        const pdf = new jspdf.jsPDF('p', 'mm', [imgWidthMm, imgHeightMm]);
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidthMm, imgHeightMm);
+        const fileName = generateExportFilename();
+        pdf.save(fileName);
+
+        // Clean up
+        $('#exportCredits').remove();
+        $('.card').each(function() {
+            this.style.removeProperty('border');
+        });
+        $('.right-side').css('overflow', originalOverflow).css('background-color', originalBgColor);
+    });
+});
+
+
+
+
+
+
 
 
 
@@ -430,6 +692,8 @@ $(document).ready(function () {$(document).ready(function () {
 function showPopup() {
     console.log("Showing popup...");
 
+    $('#savePdfBtn').fadeOut();
+
     // Shuffle popup images before showing
     shufflePopupImages();
 
@@ -479,9 +743,14 @@ function closePopup() {
     if (!isPopupClosed) {
         isPopupClosed = true;  // Set the flag to true on first close
         $('#randomizeBtn').trigger("click");  // Trigger the randomization after closing the popup
+        $('#savePdfBtn').fadeIn(); // Show the PDF button
+    } else {
+    $('#savePdfBtn').fadeIn(); // Also show on subsequent popup closes
     }
 }
   
+    updateSavePdfButtonState();
+
 });
 
 

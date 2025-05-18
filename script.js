@@ -18,15 +18,13 @@ $(document).ready(function() {
     let currentZIndex = 100; // Starting z-index value
 
     const imageArray = [];
-    for (let i = 1; i <= 30; i++) {
+    for (let i = 1; i <= 35; i++) {
       const num = String(i).padStart(2, '0'); // "01", "02", etc.
       imageArray.push(`images/image${num}.jpg`);
     }
 
 let lastExportTime = '';
 let exportCounter = 1;
-
-
 
 function generateExportFilename() {
     const now = new Date();
@@ -144,14 +142,28 @@ function generateExportFilename() {
         "Every time I try to organize, I end up sitting on the floor going through old photos:)",
         "at this point, my piles have their own organizational logic. please don’t touch them :)",
         "‘throw it all out’ vs ‘what if I need this one day?’",
-        
-
-
-
-
-
-    
+            
     ];
+
+
+
+// Shuffle function
+function shuffleArray(array) {
+    const shuffled = array.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+// Reshuffle arrays once on page load
+const shuffledImages = shuffleArray(imageArray);
+const shuffledTexts = shuffleArray(textArray);
+
+let imageIndex = 0;
+let textIndex = 0;
+
 
 
 function updateSavePdfButtonState() {
@@ -256,6 +268,15 @@ function typeText(target, text) {
 $('#randomizeBtn').click(function() {
     let randomText, randomImage;
 
+    // --- Fixed Order (Reshuffled on Load) ---
+    randomText = shuffledTexts[textIndex];
+    randomImage = shuffledImages[imageIndex];
+    
+    textIndex = (textIndex + 1) % shuffledTexts.length;
+    imageIndex = (imageIndex + 1) % shuffledImages.length;
+
+    // --- ORIGINAL RANDOM MODE (Commented Out) ---
+    /*
     do {
         randomText = textArray[Math.floor(Math.random() * textArray.length)];
     } while (randomText === lastText);
@@ -265,6 +286,7 @@ $('#randomizeBtn').click(function() {
         randomImage = imageArray[Math.floor(Math.random() * imageArray.length)];
     } while (randomImage === lastImage);
     lastImage = randomImage;
+    */
 
     // Create a new pair (with invisible text and image initially)
     const newPair = $(`
@@ -871,6 +893,5 @@ rightSide.addEventListener('scroll', () => {
     rightSide.classList.remove('scrolling');
   }, 1000);
 });
-
 
 

@@ -23,9 +23,10 @@ $(document).ready(function() {
       imageArray.push(`images/image${num}.jpg`);
     }
 
-
 let lastExportTime = '';
 let exportCounter = 1;
+
+
 
 function generateExportFilename() {
     const now = new Date();

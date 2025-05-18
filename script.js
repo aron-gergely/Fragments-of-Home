@@ -158,8 +158,8 @@ function shuffleArray(array) {
 }
 
 // Reshuffle arrays once on page load
-const shuffledImages = shuffleArray(imageArray);
-const shuffledTexts = shuffleArray(textArray);
+let shuffledImages = shuffleArray(imageArray);
+let shuffledTexts = shuffleArray(textArray);
 
 let imageIndex = 0;
 let textIndex = 0;
@@ -353,10 +353,12 @@ $('#randomizeBtn').click(function() {
 $('#newImageBtn').click(function() {
     if ($('#pairContainer img').length === 0) return;
 
-    let randomImage;
-    do {
-        randomImage = imageArray[Math.floor(Math.random() * imageArray.length)];
-    } while (randomImage === lastImage);
+    
+    if (imageIndex >= shuffledImages.length) {
+        shuffledImages = shuffleArray(imageArray); // Optional reshuffle after full cycle
+        imageIndex = 0;
+    }
+    const randomImage = shuffledImages[imageIndex++];
     lastImage = randomImage;
 
     const imgElement = $('#pairContainer img');
@@ -378,10 +380,11 @@ if (imgElement.length) {
 
 // Refresh only the text (with animation)
 $('#newTextBtn').click(function() {
-    let randomText;
-    do {
-        randomText = textArray[Math.floor(Math.random() * textArray.length)];
-    } while (randomText === lastText);
+    if (textIndex >= shuffledTexts.length) {
+        shuffledTexts = shuffleArray(textArray); // Optional reshuffle after full cycle
+        textIndex = 0;
+    }
+    const randomText = shuffledTexts[textIndex++];
     lastText = randomText;
 
     const textElement = $('#pairContainer p');
